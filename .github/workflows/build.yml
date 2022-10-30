@@ -29,10 +29,6 @@ jobs:
         id: python
         with:
           python-version: ${{ matrix.python-version }}
-      - uses: ilammy/msvc-dev-cmd@v1
-        id: msvc
-        with:
-          vsversion: 2022
       - id: prepare-build
         run: |
           git clone https://github.com/facebookresearch/xformers.git
