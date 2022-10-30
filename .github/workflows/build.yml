@@ -7,7 +7,7 @@ on:
 
 env:
   NVCC_FLAGS: "-allow-unsupported-compiler"
-  TORCH_CUDA_ARCH_LIST: "7.0;7.5+PTX;8.0;8.6+PTX"
+  TORCH_CUDA_ARCH_LIST: "7.0;7.5;8.0"
   DISTUTILS_USE_SDK: 1
   FORCE_CUDA: 1
 
@@ -19,26 +19,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os-version: ubuntu-latest
-            python-version: '3.10'
-            cuda-version: '11.3.1'
-            torch-install-command: 'torch==1.12.1+cu113 torchvision==0.13.1+cu113 --extra-index-url https://download.pytorch.org/whl/cu113'
-          - os-version: ubuntu-latest
-            python-version: '3.8'
-            cuda-version: '11.7.0'
-            torch-install-command: 'torch==1.13.0+cu117 torchvision==0.14.0+cu117 --extra-index-url https://download.pytorch.org/whl/cu117'
-          - os-version: ubuntu-latest
+          - os-version: ubuntu-18.04
             python-version: '3.7'
             cuda-version: '11.3.1'
             torch-install-command: 'torch==1.12.1+cu113 torchvision==0.13.1+cu113 --extra-index-url https://download.pytorch.org/whl/cu113'
-          - os-version: windows-latest
-            python-version: '3.10'
-            cuda-version: '11.3.1'
-            torch-install-command: 'torch==1.12.1+cu113 torchvision==0.13.1+cu113 --extra-index-url https://download.pytorch.org/whl/cu113'
-          - os-version: windows-latest
-            python-version: '3.8'
-            cuda-version: '11.7.0'
-            torch-install-command: 'torch==1.13.0+cu117 torchvision==0.14.0+cu117 --extra-index-url https://download.pytorch.org/whl/cu117'
 
     steps:
       - uses: actions/setup-python@v4
@@ -57,10 +41,6 @@ jobs:
           pip install ${{ matrix.torch-install-command }}
           pip install -r requirements.txt
           pip install wheel
-      - id: winmemhack
-        if: runner.os == 'Windows'
-        run: |
-          (Get-Content xformers\setup.py) -replace '"4"', '"1"' | Out-File xformers\setup.py
       - uses: Jimver/cuda-toolkit@v0.2.8
         id: cuda-toolkit
         with:
